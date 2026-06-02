@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>갈등 해결 요정</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#3182F6;--blue-light:#EBF3FF;--blue-dark:#1B64DA;
+  --bg:#F7F8FA;--white:#FFFFFF;
+  --gray-100:#F2F4F6;--gray-200:#E5E8EB;--gray-300:#D1D6DB;
+  --gray-400:#AEB5BC;--gray-500:#8B95A1;--gray-600:#6B7684;
+  --gray-700:#4E5968;--gray-800:#333D4B;--gray-900:#191F28;
+  --green:#0DC076;--green-light:#E8FAF0;
+  --orange:#FF8B37;--orange-light:#FFF3E8;
+  --red:#F04452;--red-light:#FFF0F1;
+  --r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;
+  --shadow:0 1px 8px rgba(0,0,0,0.06);
+}
+body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--gray-900);min-height:100vh;-webkit-font-smoothing:antialiased}
+header{background:var(--white);border-bottom:1px solid var(--gray-200);padding:0 20px;position:sticky;top:0;z-index:100}
+.hi{max-width:720px;margin:0 auto;height:56px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;color:var(--gray-900);display:flex;align-items:center;gap:8px}
+.logo-dot{width:7px;height:7px;background:var(--blue);border-radius:50%;animation:logoPulse 2s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.music-btn{background:var(--gray-100);border:none;border-radius:50px;padding:7px 14px;font-size:13px;font-weight:500;color:var(--gray-600);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.music-btn:hover{background:var(--gray-200)}
+.music-btn.active{background:var(--blue-light);color:var(--blue)}
+.tab-nav{background:var(--white);border-bottom:1px solid var(--gray-200);padding:0 20px;overflow-x:auto;scrollbar-width:none}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-nav-inner{max-width:720px;margin:0 auto;display:flex}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;padding:14px 16px;font-size:14px;font-weight:500;color:var(--gray-400);cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+.main{max-width:720px;margin:0 auto;padding:24px 20px 80px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.card{background:var(--white);border-radius:var(--r-lg);padding:22px 20px;box-shadow:var(--shadow);margin-bottom:12px}
+
+/* ── Story ── */
+.story-badge{display:inline-flex;align-items:center;gap:6px;background:var(--blue-light);color:var(--blue);border-radius:50px;padding:5px 12px;font-size:12px;font-weight:600;margin-bottom:16px}
+.story-dot{width:6px;height:6px;background:var(--blue);border-radius:50%}
+.card-title{font-size:22px;font-weight:800;color:var(--gray-900);line-height:1.35;letter-spacing:-0.5px;margin-bottom:20px}
+.story-body{font-size:15px;color:var(--gray-700);line-height:1.9}
+.story-body p{margin-bottom:14px}
+.story-body p:last-child{margin-bottom:0}
+.story-divider{text-align:center;color:var(--gray-300);font-size:13px;margin:22px 0;letter-spacing:8px}
+.story-cta{background:var(--blue-light);border-radius:var(--r-sm);padding:14px 16px;font-size:14px;color:var(--blue-dark);font-weight:500;line-height:1.65;margin-top:14px}
+
+/* ── Sphere (write tab only) ── */
+.sphere-wrap{display:flex;flex-direction:column;align-items:center;padding:28px 0 14px}
+.fairy-container{position:relative;width:72px;height:72px;animation:sphereBounce 2.2s ease-in-out infinite}
+.wing{position:absolute;top:50%;z-index:0;pointer-events:none}
+.wing-l{right:48px;transform-origin:right center;animation:wingFlap 1.6s ease-in-out infinite}
+.wing-r{left:48px;transform-origin:left center;animation:wingFlap 1.6s ease-in-out infinite 0.08s}
+@keyframes wingFlap{0%,100%{transform:translateY(-50%) scaleX(1);opacity:1}50%{transform:translateY(-56%) scaleX(0.58);opacity:0.88}}
+.sphere{width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7BC8FF 0%,#3182F6 45%,#1040A0 100%);box-shadow:0 12px 32px rgba(49,130,246,0.35),inset 0 -6px 12px rgba(0,0,50,0.2),inset 0 4px 8px rgba(255,255,255,0.5);position:relative;z-index:2;position:relative}
+.sphere::after{content:"";position:absolute;top:10%;left:14%;width:22px;height:12px;z-index:4;background:radial-gradient(ellipse,rgba(255,255,255,0.7) 0%,rgba(255,255,255,0) 100%);border-radius:50%;transform:rotate(-20deg)}
+@keyframes sphereBounce{0%,100%{transform:translateY(0) scale(1,1)}45%{transform:translateY(-20px) scale(1.04,0.97)}55%{transform:translateY(-22px) scale(1.04,0.97)}80%{transform:translateY(3px) scale(0.97,1.03)}}
+.sphere-shadow{width:52px;height:8px;margin:4px auto 0;background:radial-gradient(ellipse,rgba(49,130,246,0.22) 0%,transparent 70%);border-radius:50%;animation:spulse 2.2s ease-in-out infinite}
+@keyframes spulse{0%,100%{transform:scaleX(1);opacity:.7}50%{transform:scaleX(0.75);opacity:.3}}
+
+/* ── Droplet keyframes ── */
+@keyframes dropMorphLg{0%,100%{border-radius:62% 38% 68% 32% / 52% 58% 42% 48%}33%{border-radius:50% 50% 36% 64% / 60% 40% 60% 40%}66%{border-radius:38% 62% 58% 42% / 42% 54% 46% 58%}}
+@keyframes dropFloatLg{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-10px) scale(1.04,0.97)}}
+@keyframes dropMorphSm{0%,100%{border-radius:62% 38% 68% 32% / 52% 58% 42% 48%}50%{border-radius:45% 55% 40% 60% / 58% 45% 55% 42%}}
+@keyframes dropFloatSm{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* ── Write ── */
+.section-label{font-size:13px;font-weight:600;color:var(--gray-500);margin-bottom:10px}
+.prompt-box{background:var(--blue-light);border-radius:var(--r-md);padding:16px 18px;margin-bottom:18px}
+.prompt-box p{font-size:14px;color:var(--blue-dark);font-weight:500;line-height:1.7}
+.nick-wrap{margin-bottom:16px}
+.nick-label{font-size:13px;font-weight:600;color:var(--gray-500);margin-bottom:8px;display:block}
+.nick-input{width:100%;border:1.5px solid var(--gray-200);border-radius:var(--r-md);padding:12px 16px;font-size:15px;font-family:inherit;color:var(--gray-900);outline:none;background:var(--white);transition:border-color .2s}
+.nick-input:focus{border-color:var(--blue)}
+.nick-input::placeholder{color:var(--gray-400)}
+textarea{width:100%;min-height:150px;border:1.5px solid var(--gray-200);border-radius:var(--r-md);padding:14px 16px;font-size:15px;font-family:inherit;color:var(--gray-900);resize:none;outline:none;line-height:1.75;background:var(--white);transition:border-color .2s}
+textarea:focus{border-color:var(--blue)}
+textarea::placeholder{color:var(--gray-400)}
+.char-count{text-align:right;font-size:12px;color:var(--gray-400);margin-top:8px;margin-bottom:16px}
+.submit-btn{width:100%;background:var(--blue);color:var(--white);border:none;border-radius:var(--r-md);padding:15px;font-size:16px;font-weight:700;cursor:pointer;transition:background .2s}
+.submit-btn:hover{background:var(--blue-dark)}
+
+/* ── Loading ── */
+.loading-box{display:none;flex-direction:column;align-items:center;padding:48px 24px;gap:14px}
+.loading-box.show{display:flex}
+.spinner{width:36px;height:36px;border:2.5px solid var(--gray-200);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:15px;color:var(--gray-500);font-weight:500}
+
+/* ── Result ── */
+.result-box{display:none}
+.result-box.show{display:block}
+.rs{border-radius:var(--r-md);padding:18px 20px;margin-bottom:10px}
+.rs.praise{background:var(--white);border:1.5px solid var(--gray-200)}
+.rs.feedback{background:var(--white);border:1.5px solid var(--gray-200)}
+.rs.warning-box{background:var(--red-light);border:1.5px solid #FFBEC2}
+.rs-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.rs-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rs-dot.green{background:#0DC076}
+.rs-dot.orange{background:#FF8B37}
+.rs-dot.red{background:#F04452}
+.rs-title{font-size:13px;font-weight:700;color:var(--gray-700)}
+.rs-body{font-size:14px;color:var(--gray-800);line-height:1.85;white-space:pre-wrap}
+.warn-msg{font-size:14px;font-weight:600;color:var(--red);margin-top:10px}
+
+/* ── Piece Award ── */
+.piece-award{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--r-xl);padding:32px 24px 28px;text-align:center;margin-bottom:10px;box-shadow:var(--shadow)}
+.piece-drop-wrap{display:flex;justify-content:center;margin-bottom:6px}
+.piece-drop-shadow{width:40px;height:6px;border-radius:50%;margin:0 auto 18px}
+.piece-name{font-size:19px;font-weight:800;color:var(--gray-900);margin-bottom:6px;letter-spacing:-0.3px}
+.piece-desc{font-size:13px;color:var(--gray-500);line-height:1.6}
+.piece-award.warn-piece{border-color:#FFBEC2}
+.piece-award.warn-piece .piece-name{color:var(--red)}
+.reset-btn{width:100%;background:var(--gray-100);color:var(--gray-600);border:none;border-radius:var(--r-md);padding:14px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
+.reset-btn:hover{background:var(--gray-200)}
+
+/* ── Community ── */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-title{font-size:18px;font-weight:800;color:var(--gray-900);letter-spacing:-0.3px}
+.count-pill{font-size:12px;color:var(--gray-500);background:var(--gray-100);border-radius:50px;padding:4px 12px;font-weight:500}
+.post-card{background:var(--white);border-radius:var(--r-md);padding:16px 18px;margin-bottom:10px;box-shadow:var(--shadow)}
+.post-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.post-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--gray-700);background:var(--gray-100);border-radius:50px;padding:4px 10px}
+.post-time{font-size:12px;color:var(--gray-400)}
+.post-text{font-size:14px;color:var(--gray-700);line-height:1.7}
+.empty-state{text-align:center;padding:56px 24px;color:var(--gray-400)}
+.empty-icon{width:44px;height:44px;background:var(--gray-100);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.empty-state p{font-size:14px;line-height:1.65}
+
+/* ── My Pieces ── */
+.pieces-top{margin-bottom:20px}
+.pieces-top h2{font-size:20px;font-weight:800;color:var(--gray-900);letter-spacing:-0.3px;margin-bottom:4px}
+.pieces-top p{font-size:14px;color:var(--gray-500)}
+.total-card{background:var(--blue);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.total-label{font-size:14px;color:rgba(255,255,255,0.8);font-weight:500}
+.total-count{font-size:26px;font-weight:800;color:var(--white)}
+.piece-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.piece-chip{background:var(--white);border-radius:var(--r-md);padding:18px 8px 14px;text-align:center;box-shadow:var(--shadow);border:1.5px solid var(--gray-200)}
+.chip-drop{display:flex;justify-content:center;margin-bottom:10px}
+.chip-name{font-size:12px;font-weight:600;color:var(--gray-900);line-height:1.3}
+.chip-count{font-size:11px;color:var(--gray-400);margin-top:3px}
+.piece-chip.warn-chip{border-color:#FFBEC2;background:var(--red-light)}
+.piece-chip.warn-chip .chip-name{color:var(--red)}
+.hist-title{font-size:15px;font-weight:700;color:var(--gray-800);margin-bottom:12px}
+.hist-item{background:var(--white);border-radius:var(--r-md);padding:14px 16px;margin-bottom:8px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
+.hist-info{flex:1}
+.hist-name{font-size:14px;font-weight:600;color:var(--gray-900)}
+.hist-time{font-size:12px;color:var(--gray-400);margin-top:2px}
+@media(max-width:480px){.main{padding:20px 16px 80px}.tab-btn{padding:13px 10px;font-size:13px}.piece-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="hi">
+    <div class="logo"><span class="logo-dot"></span>갈등 해결 요정</div>
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">
+      <span id="musicNote">&#9835;</span><span id="musicLabel">음악 켜기</span>
+    </button>
+  </div>
+</header>
+
+<div class="tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" onclick="switchTab('story',this)">이야기</button>
+    <button class="tab-btn" onclick="switchTab('write',this)">나만의 결말</button>
+    <button class="tab-btn" onclick="switchTab('community',this)">모두의 결말</button>
+    <button class="tab-btn" onclick="switchTab('mypieces',this)">나의 조각</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ── 이야기 탭 (구체 없음) ── -->
+  <div class="tab-panel active" id="tab-story">
+    <div class="card">
+      <div class="story-badge"><span class="story-dot"></span>중학교 1학년 3반</div>
+      <div class="card-title">단톡방에서 나만 나가져 있었다</div>
+      <div class="story-body">
+        <p>중학교 1학년 3반에는 항상 시끄럽고 웃음이 끊이지 않는 단톡방이 있었다. 시험기간에도, 급식이 맛없을 때도, 누군가 기분이 안 좋을 때도 그 단톡방은 늘 살아 있었다.</p>
+        <p>그런데 어느 날 아침, 단톡방이 사라졌다. 아니, 정확히는 나만 단톡방에서 나가져 있었다.</p>
+        <p>처음엔 오류인 줄 알았다. 그래서 친구 개인톡으로 물어봤다.</p>
+        <p>"나 왜 단톡방 나가져 있어?"</p>
+        <p>그런데 답장이 이상했다.<br>"어… 몰랐어…" "누가 그런 거야?" "그냥 좀… 상황이 있었어"</p>
+        <p>분명 다들 알고 있는 느낌인데 아무도 제대로 말해주지 않았다.</p>
+        <p>학교에 가보니 분위기가 더 이상했다. 평소처럼 인사하던 친구는 눈을 피했고, 가장 친하다고 생각했던 친구는 "나중에 얘기하자…" 라고만 했다.</p>
+        <p>그리고 쉬는 시간, 뒤에서 누군가 이렇게 말했다.</p>
+        <p>"걔 때문에 그런 거 아니야?"</p>
+        <p>그 순간 머릿속이 복잡해졌다. 내가 뭘 잘못한 걸까? 누가 일부러 그런 걸까? 아니면 오해가 생긴 걸까?</p>
+        <p>그때, 한 친구가 조용히 다가왔다.</p>
+        <p><strong>"사실… 어제 일이 있었어."</strong></p>
+      </div>
+      <div class="story-divider">· · ·</div>
+      <div class="story-cta">이 이야기, 어떻게 마무리될까요?<br><strong>나만의 결말</strong> 탭에서 여러분의 결말을 들려주세요</div>
+    </div>
+  </div>
+
+  <!-- ── 나만의 결말 탭 (구체 있음) ── -->
+  <div class="tab-panel" id="tab-write">
+    <div id="writeArea">
+      <div class="sphere-wrap">
+        <div class="fairy-container">
+          <svg class="wing wing-l" width="54" height="72" viewBox="0 0 54 72" fill="none"><defs><linearGradient id="wgl_fill" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c7e8ff" stop-opacity="0.96"/><stop offset="55%" stop-color="#a5d4f5" stop-opacity="0.82"/><stop offset="100%" stop-color="#7bbce8" stop-opacity="0.55"/></linearGradient><linearGradient id="wgl_fill2" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d8eeff" stop-opacity="0.88"/><stop offset="100%" stop-color="#9ecfef" stop-opacity="0.50"/></linearGradient></defs><path d="M 50,36 Q 42,8 16,4 Q 2,4 2,20 Q 2,34 26,36 Z" fill="url(#wgl_fill)" stroke="#90c8e8" stroke-width="1.4"/><path d="M 50,38 Q 42,62 18,66 Q 4,66 6,52 Q 8,42 28,38 Z" fill="url(#wgl_fill2)" stroke="#90c8e8" stroke-width="1.2"/><path d="M 48,37 Q 30,28 8,12" stroke="#b8dff5" stroke-width="1.2" fill="none"/><path d="M 48,37 Q 30,46 10,60" stroke="#b8dff5" stroke-width="1.0" fill="none"/><path d="M 38,20 Q 24,22 8,20" stroke="#cceafc" stroke-width="0.7" fill="none"/><path d="M 38,52 Q 24,52 10,54" stroke="#cceafc" stroke-width="0.6" fill="none"/><path d="M 46,36 Q 36,14 18,10" stroke="rgba(255,255,255,0.7)" stroke-width="1.0" fill="none"/></svg>
+          <div class="sphere" style="position:relative;z-index:2;"><svg viewBox="0 0 72 72" width="72" height="72" style="position:absolute;top:0;left:0;z-index:3;pointer-events:none"><ellipse cx="26" cy="30" rx="3" ry="4" fill="#111" opacity="0.92"/><ellipse cx="25" cy="28.8" rx="1.0" ry="0.7" fill="rgba(255,255,255,0.35)"/><ellipse cx="46" cy="30" rx="3" ry="4" fill="#111" opacity="0.92"/><ellipse cx="45" cy="28.8" rx="1.0" ry="0.7" fill="rgba(255,255,255,0.35)"/><ellipse cx="26" cy="30" rx="4.2" ry="5.2" fill="none" stroke="rgba(0,20,60,0.2)" stroke-width="1.5"/><ellipse cx="46" cy="30" rx="4.2" ry="5.2" fill="none" stroke="rgba(0,20,60,0.2)" stroke-width="1.5"/><path d="M 18,48 Q 36,66 54,48" stroke="rgba(0,20,60,0.3)" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M 18,48 Q 36,66 54,48" stroke="#111" stroke-width="4.5" fill="none" stroke-linecap="round" opacity="0.92"/><path d="M 18,48 Q 36,66 54,48 Q 54,55 36,58 Q 18,55 18,48 Z" fill="#0a0a0a" opacity="0.85"/><path d="M 22,48 Q 36,60 50,48" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+          <svg class="wing wing-r" width="54" height="72" viewBox="0 0 54 72" fill="none"><defs><linearGradient id="wgr_fill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c7e8ff" stop-opacity="0.96"/><stop offset="55%" stop-color="#a5d4f5" stop-opacity="0.82"/><stop offset="100%" stop-color="#7bbce8" stop-opacity="0.55"/></linearGradient><linearGradient id="wgr_fill2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d8eeff" stop-opacity="0.88"/><stop offset="100%" stop-color="#9ecfef" stop-opacity="0.50"/></linearGradient></defs><path d="M 4,36 Q 12,8 38,4 Q 52,4 52,20 Q 52,34 28,36 Z" fill="url(#wgr_fill)" stroke="#90c8e8" stroke-width="1.4"/><path d="M 4,38 Q 12,62 36,66 Q 50,66 48,52 Q 46,42 26,38 Z" fill="url(#wgr_fill2)" stroke="#90c8e8" stroke-width="1.2"/><path d="M 6,37 Q 24,28 46,12" stroke="#b8dff5" stroke-width="1.2" fill="none"/><path d="M 6,37 Q 24,46 44,60" stroke="#b8dff5" stroke-width="1.0" fill="none"/><path d="M 16,20 Q 30,22 46,20" stroke="#cceafc" stroke-width="0.7" fill="none"/><path d="M 16,52 Q 30,52 44,54" stroke="#cceafc" stroke-width="0.6" fill="none"/><path d="M 8,36 Q 18,14 36,10" stroke="rgba(255,255,255,0.7)" stroke-width="1.0" fill="none"/></svg>
+        </div>
+        <div class="sphere-shadow"></div>
+      </div>
+      <div class="card" style="padding-bottom:8px">
+        <div class="nick-wrap">
+          <label class="nick-label" for="nickInput">닉네임</label>
+          <input class="nick-input" id="nickInput" type="text" placeholder="익명으로 남기려면 비워두세요" maxlength="12"/>
+        </div>
+        <div class="prompt-box">
+          <p>안녕. 나는 갈등 해결 요정이야. 이 이야기의 결말을 써줘.<br>만약 네가 주인공이라면 어떻게 했을 것 같아?<br>친구와 어떻게 갈등을 풀어갈지 솔직하게 적어봐.</p>
+        </div>
+        <div class="section-label">결말 작성</div>
+        <textarea id="storyInput" placeholder="이야기의 뒷내용을 자유롭게 써봐..." maxlength="800" oninput="updateCount()"></textarea>
+        <div class="char-count"><span id="charCount">0</span> / 800</div>
+        <button class="submit-btn" onclick="submitStory()">요정에게 보내기</button>
+      </div>
+    </div>
+    <div class="card loading-box" id="loadingBox">
+      <div class="spinner"></div>
+      <div class="loading-text">요정이 열심히 읽고 있어요…</div>
+    </div>
+    <div class="result-box" id="resultBox">
+      <div class="rs praise">
+        <div class="rs-head"><span class="rs-dot green"></span><span class="rs-title">잘한 점</span></div>
+        <div class="rs-body" id="praiseText"></div>
+      </div>
+      <div class="rs feedback" id="feedbackSection">
+        <div class="rs-head"><span class="rs-dot orange" id="fbDot"></span><span class="rs-title">한 걸음 더</span></div>
+        <div class="rs-body" id="feedbackText"></div>
+        <div class="warn-msg" id="warningRethink" style="display:none">우리 다시 생각해 볼까요?</div>
+      </div>
+      <div class="piece-award" id="pieceAward">
+        <div class="piece-drop-wrap" id="pieceDropWrap"></div>
+        <div class="piece-drop-shadow" id="pieceDropShadow"></div>
+        <div class="piece-name" id="pieceName"></div>
+        <div class="piece-desc" id="pieceDesc"></div>
+      </div>
+      <button class="reset-btn" onclick="resetWrite()">다시 써보기</button>
+    </div>
+  </div>
+
+  <!-- ── 모두의 결말 탭 ── -->
+  <div class="tab-panel" id="tab-community">
+    <div class="sec-head">
+      <div class="sec-title">모두의 이야기</div>
+      <div class="count-pill" id="communityCount">0개</div>
+    </div>
+    <div id="communityList">
+      <div class="empty-state">
+        <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#AEB5BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <p>아직 이야기가 없어요.<br>첫 번째 결말을 써보세요!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 나의 조각 탭 ── -->
+  <div class="tab-panel" id="tab-mypieces">
+    <div class="pieces-top">
+      <h2>나의 조각 모음</h2>
+      <p>이야기를 쓸 때마다 조각이 쌓여요</p>
+    </div>
+    <div class="total-card">
+      <span class="total-label">지금까지 모은 조각</span>
+      <span class="total-count" id="pieceTotalCount">0개</span>
+    </div>
+    <div class="piece-grid" id="myPieceGrid">
+      <div style="grid-column:1/-1"><div class="empty-state"><p>아직 모은 조각이 없어요.<br>결말을 써보고 첫 조각을 받아봐요!</p></div></div>
+    </div>
+    <div id="myPieceHistory"></div>
+  </div>
+
+</div>
+
+<script>
+var API_KEY = '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';
+var API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+var MODEL   = 'llama-3.3-70b-versatile';
+var pieces = JSON.parse(localStorage.getItem('fairyPieces') || '[]');
+var posts  = []; // Firestore에서 실시간으로 불러옴
+
+// Firebase 초기화
+var firebaseConfig = {
+  apiKey: "AIzaSyDBKW6dc2ILyOR0FHQaU1_cy6xuSecjlXo",
+  authDomain: "conflicfairy.firebaseapp.com",
+  projectId: "conflicfairy",
+  storageBucket: "conflicfairy.firebasestorage.app",
+  messagingSenderId: "741907237786",
+  appId: "1:741907237786:web:4f74d90a125eee24b80823"
+};
+firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+
+// 실시간 리스너 — Firestore posts 컬렉션 구독
+db.collection('posts').orderBy('createdAt', 'desc').limit(50)
+  .onSnapshot(function(snapshot) {
+    posts = snapshot.docs.map(function(doc) { return doc.data(); });
+    // 커뮤니티 탭이 활성화 상태면 즉시 갱신
+    if (document.getElementById('tab-community').classList.contains('active')) {
+      renderCommunity();
+    }
+    document.getElementById('communityCount').textContent = posts.length + '개';
+  }, function(err) {
+    console.error('Firestore 연결 오류:', err);
+  });
+var audioCtx = null, musicPlaying = false, loopTimer = null;
+
+var SYSTEM_PROMPT = "당신은 중학교 1학년 학생들의 갈등 해결 이야기를 분석하는 따뜻한 상담사입니다.\n학생이 쓴 결말 전체의 맥락과 이야기 흐름을 바탕으로 분석하세요. 키워드 단위 분석이 아니라 전체적인 서사, 감정 흐름, 갈등 해결 방식, 공감 능력, 주도성 등을 종합적으로 평가하세요.\nIMPORTANT: Use ONLY Korean Hangul. Do NOT use any Hanja or Chinese characters.\n반드시 아래 형식의 순수 JSON만 출력하세요. 마크다운 코드블록 없이:\n{\"isWarning\":false,\"praise\":\"잘한 점 2줄 이상 구체적으로\",\"feedback\":\"한 걸음 더 2줄 이상 구체적으로\",\"pieceName\":\"조각 이름 (2~4글자)\",\"pieceDesc\":\"수여 이유 한 문장\"}\n\n경고 판정: 폭력적, 복수, 분열, 분노 중심이면 isWarning:true, pieceName:\"노력의 조각\"";
+
+/* ── 물방울 컬러 팔레트 ── */
+var PALS = [
+  {l:'#6EE7B7',m:'#10B981',d:'#065F46',s:'rgba(16,185,129,0.25)'},   // emerald (158°)
+  {l:'#C4B5FD',m:'#8B5CF6',d:'#4C1D95',s:'rgba(139,92,246,0.25)'},   // violet (262°)
+  {l:'#FCD34D',m:'#D97706',d:'#78350F',s:'rgba(217,119,6,0.25)'},    // amber (36°)
+  {l:'#F0ABFC',m:'#C026D3',d:'#701A75',s:'rgba(192,38,211,0.25)'},   // magenta (293°)
+  {l:'#C7D2FE',m:'#6366F1',d:'#3730A3',s:'rgba(99,102,241,0.25)'},   // indigo (239°) — 교체: medium green 제거
+  {l:'#FBB07E',m:'#EA580C',d:'#7C2D12',s:'rgba(234,88,12,0.25)'},    // orange (21°)
+  {l:'#99F6E4',m:'#0D9488',d:'#134E4A',s:'rgba(13,148,136,0.25)'},   // teal (177°)
+  {l:'#FBCFE8',m:'#DB2777',d:'#831843',s:'rgba(219,39,119,0.25)'},   // rose-pink (330°) — 교체: red 제거
+  {l:'#D9F99D',m:'#65A30D',d:'#365314',s:'rgba(101,163,13,0.25)'},   // lime (83°)
+  {l:'#BAE6FD',m:'#0EA5E9',d:'#0C4A6E',s:'rgba(14,165,233,0.25)'}   // sky (199°) — 교체: dark amber 제거
+];
+var WARN_PAL = {l:'#FCA5A5',m:'#F04452',d:'#991B1B',s:'rgba(240,68,82,0.25)'};
+
+function hashStr(s) {
+  var h = 0;
+  for (var i = 0; i < (s||'').length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return h;
+}
+function getPal(name, isWarning) {
+  return isWarning ? WARN_PAL : PALS[Math.abs(hashStr(name)) % PALS.length];
+}
+
+/* ── 물방울 HTML 생성 ── */
+function dropHtml(name, isWarning, size, anim) {
+  var p = getPal(name, isWarning);
+  var s = size;
+  var hi = '<div style="position:absolute;top:14%;left:20%;width:' + Math.round(s*0.32) + 'px;height:' + Math.round(s*0.2) + 'px;background:radial-gradient(ellipse,rgba(255,255,255,0.55) 0%,rgba(255,255,255,0) 100%);border-radius:50%;transform:rotate(-15deg)"></div>';
+  var an = anim === 'lg' ? 'animation:dropMorphLg 3.5s ease-in-out infinite,dropFloatLg 2.8s ease-in-out infinite;' :
+           anim === 'sm' ? 'animation:dropMorphSm 4.2s ease-in-out infinite,dropFloatSm 3.8s ease-in-out infinite;' : '';
+  return '<div style="position:relative;flex-shrink:0;width:' + s + 'px;height:' + s + 'px;' +
+    'background:radial-gradient(circle at 35% 28%,' + p.l + ' 0%,' + p.m + ' 52%,' + p.d + ' 100%);' +
+    'border-radius:62% 38% 68% 32% / 52% 58% 42% 48%;' +
+    'box-shadow:0 ' + Math.round(s*0.14) + 'px ' + Math.round(s*0.42) + 'px ' + p.s + ',' +
+    'inset 0 -' + Math.round(s*0.07) + 'px ' + Math.round(s*0.14) + 'px rgba(0,0,20,0.18),' +
+    'inset 0 ' + Math.round(s*0.04) + 'px ' + Math.round(s*0.1) + 'px rgba(255,255,255,0.5);' + an + '">' + hi + '</div>';
+}
+function dotHtml(name, isWarning) {
+  var p = getPal(name, isWarning);
+  return '<div style="width:8px;height:8px;border-radius:50%;background:' + p.m + ';flex-shrink:0"></div>';
+}
+
+/* ── 한자 필터 ── */
+function clean(str) {
+  if (!str) return str;
+  return str
+    .replace(/[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/g, '')
+    .replace(/[\u0400-\u052F]/g, '')
+    .replace(/[\u0600-\u06FF]/g, '')
+    .replace(/[\u0E00-\u0E7F]/g, '')
+    .replace(/[\u0590-\u05FF]/g, '')
+    .replace(/[\u0370-\u03FF]/g, '');
+}
+function filterResult(r) {
+  r.praise    = clean(r.praise);
+  r.feedback  = clean(r.feedback);
+  r.pieceName = clean(r.pieceName);
+  r.pieceDesc = clean(r.pieceDesc);
+  return r;
+}
+
+/* ── 탭 전환 ── */
+function switchTab(id, el) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'community') renderCommunity();
+  if (id === 'mypieces') renderMyPieces();
+}
+
+function updateCount() {
+  document.getElementById('charCount').textContent = document.getElementById('storyInput').value.length;
+}
+
+/* ── API 호출 ── */
+function submitStory() {
+  var text = document.getElementById('storyInput').value.trim();
+  var nick = document.getElementById('nickInput').value.trim() || '익명';
+  if (text.length < 10) { alert('조금 더 이야기를 써줘!'); return; }
+  document.getElementById('writeArea').style.display = 'none';
+  document.getElementById('loadingBox').classList.add('show');
+  document.getElementById('resultBox').classList.remove('show');
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+    body: JSON.stringify({
+      model: MODEL,
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: '[학생 결말]\n' + text }],
+      temperature: 0.7, max_tokens: 600
+    })
+  })
+  .then(function(res) {
+    if (!res.ok) return res.json().then(function(e) { throw new Error(res.status + ': ' + JSON.stringify(e)); });
+    return res.json();
+  })
+  .then(function(data) {
+    var raw = data.choices[0].message.content.trim();
+    var s = raw.indexOf('{'), e = raw.lastIndexOf('}');
+    if (s !== -1 && e !== -1) raw = raw.slice(s, e + 1);
+    showResult(filterResult(JSON.parse(raw)), text, nick);
+  })
+  .catch(function(err) {
+    document.getElementById('loadingBox').classList.remove('show');
+    document.getElementById('writeArea').style.display = 'block';
+    alert('오류가 발생했어요!\n' + err.message);
+  });
+}
+
+/* ── 결과 표시 ── */
+function showResult(r, originalText, nick) {
+  document.getElementById('loadingBox').classList.remove('show');
+  document.getElementById('praiseText').textContent   = r.praise;
+  document.getElementById('feedbackText').textContent = r.feedback;
+  var fbSec  = document.getElementById('feedbackSection');
+  var warnEl = document.getElementById('warningRethink');
+  var fbDot  = document.getElementById('fbDot');
+  if (r.isWarning) {
+    fbSec.classList.remove('feedback'); fbSec.classList.add('warning-box');
+    fbDot.classList.remove('orange'); fbDot.classList.add('red');
+    warnEl.style.display = 'block';
+  } else {
+    fbSec.classList.add('feedback'); fbSec.classList.remove('warning-box');
+    fbDot.classList.add('orange'); fbDot.classList.remove('red');
+    warnEl.style.display = 'none';
+  }
+  /* 물방울 + 그림자 색상 */
+  var pal = getPal(r.pieceName, r.isWarning);
+  document.getElementById('pieceDropWrap').innerHTML = dropHtml(r.pieceName, r.isWarning, 72, 'lg');
+  document.getElementById('pieceDropShadow').style.background = 'radial-gradient(ellipse,' + pal.s + ' 0%,transparent 70%)';
+  document.getElementById('pieceName').textContent = r.pieceName;
+  document.getElementById('pieceDesc').textContent = r.pieceDesc;
+  var award = document.getElementById('pieceAward');
+  if (r.isWarning) { award.classList.add('warn-piece'); } else { award.classList.remove('warn-piece'); }
+  document.getElementById('resultBox').classList.add('show');
+  var now = new Date().toLocaleString('ko-KR');
+  pieces.push({ name: r.pieceName, isWarning: r.isWarning, time: now });
+  localStorage.setItem('fairyPieces', JSON.stringify(pieces));
+  // Firestore에 저장
+  db.collection('posts').add({
+    text: originalText,
+    pieceName: r.pieceName,
+    isWarning: r.isWarning,
+    time: now,
+    nick: nick || '익명',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function(err) { console.error('저장 오류:', err); });
+}
+
+function resetWrite() {
+  document.getElementById('storyInput').value = '';
+  document.getElementById('nickInput').value = '';
+  document.getElementById('charCount').textContent = '0';
+  document.getElementById('resultBox').classList.remove('show');
+  document.getElementById('writeArea').style.display = 'block';
+}
+
+/* ── 커뮤니티 렌더 ── */
+function renderCommunity() {
+  var list = document.getElementById('communityList');
+  document.getElementById('communityCount').textContent = posts.length + '개';
+  if (!posts.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#AEB5BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><p>아직 이야기가 없어요.<br>첫 번째 결말을 써보세요!</p></div>';
+    return;
+  }
+  list.innerHTML = posts.map(function(p) {
+    var preview = p.text.length > 120 ? p.text.slice(0, 120) + '…' : p.text;
+    var nickName = p.nick || '익명';
+    return '<div class="post-card"><div class="post-head"><span class="post-badge">' + dotHtml(p.pieceName, p.isWarning) + p.pieceName + '</span><span class="post-time">' + nickName + ' · ' + p.time + '</span></div><div class="post-text">' + preview + '</div></div>';
+  }).join('');
+}
+
+/* ── 조각 렌더 ── */
+function renderMyPieces() {
+  document.getElementById('pieceTotalCount').textContent = pieces.length + '개';
+  var grid   = document.getElementById('myPieceGrid');
+  var histEl = document.getElementById('myPieceHistory');
+  if (!pieces.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1"><div class="empty-state"><p>아직 모은 조각이 없어요.<br>결말을 써보고 첫 조각을 받아봐요!</p></div></div>';
+    histEl.innerHTML = '';
+    return;
+  }
+  var counted = {};
+  pieces.forEach(function(p) {
+    if (!counted[p.name]) counted[p.name] = { name: p.name, count: 0, isWarning: p.isWarning };
+    counted[p.name].count++;
+  });
+  grid.innerHTML = Object.values(counted).map(function(p) {
+    return '<div class="piece-chip' + (p.isWarning ? ' warn-chip' : '') + '"><div class="chip-drop">' + dropHtml(p.name, p.isWarning, 38, 'sm') + '</div><div class="chip-name">' + p.name + '</div><div class="chip-count">' + p.count + '개</div></div>';
+  }).join('');
+  histEl.innerHTML = '<div class="hist-title">받은 순서</div>' +
+    pieces.slice().reverse().map(function(p) {
+      return '<div class="hist-item">' + dropHtml(p.name, p.isWarning, 30, '') + '<div class="hist-info"><div class="hist-name">' + p.name + '</div><div class="hist-time">' + p.time + '</div></div></div>';
+    }).join('');
+}
+
+/* ── 음악 ── */
+var NOTES = {C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,B4:493.88,C5:523.25,D5:587.33,E5:659.26};
+var MELODY_SEQ = [['E4',1],['G4',1],['A4',1],['C5',2],['B4',1],['A4',1],['G4',2],['E4',1],['F4',1],['G4',1],['A4',1],['G4',2],['E4',1],['D4',1],['C4',3],['G4',1],['A4',1],['C5',1],['E5',2],['D5',1],['C5',1],['B4',2],['A4',1],['B4',1],['C5',1],['D5',1],['E5',2],['C5',1],['G4',1],['E4',4]];
+var CHORD_SEQ  = [[[130.81,164.81,196.00],4],[[146.83,185.00,220.00],4],[[164.81,196.00,246.94],4],[[130.81,164.81,196.00],4],[[174.61,220.00,261.63],4],[[196.00,246.94,293.66],4],[[174.61,220.00,261.63],4],[[130.81,164.81,196.00],4]];
+function pianoNote(ctx,freq,st,dur,gain){
+  var o1=ctx.createOscillator(),o2=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();
+  f.type='lowpass';f.frequency.value=4000;f.Q.value=0.5;
+  o1.type='triangle';o1.frequency.value=freq;o2.type='sine';o2.frequency.value=freq*2;
+  var gv=gain||0.18;
+  g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(gv,st+0.015);
+  g.gain.exponentialRampToValueAtTime(gv*0.55,st+0.12);g.gain.exponentialRampToValueAtTime(gv*0.3,st+dur*0.7);g.gain.linearRampToValueAtTime(0,st+dur+0.15);
+  o1.connect(f);o2.connect(f);f.connect(g);g.connect(ctx.destination);
+  o1.start(st);o1.stop(st+dur+0.2);o2.start(st);o2.stop(st+dur+0.2);
+}
+function scheduleMusic(ctx,t0){
+  var beat=60/72,t=t0;
+  MELODY_SEQ.forEach(function(n){pianoNote(ctx,NOTES[n[0]],t,n[1]*beat*0.9,0.18);t+=n[1]*beat;});
+  var ct=t0;
+  CHORD_SEQ.forEach(function(c){c[0].forEach(function(f,i){pianoNote(ctx,f,ct+i*0.03,c[1]*beat*0.85,0.055);});ct+=c[1]*beat;});
+  return MELODY_SEQ.reduce(function(s,n){return s+n[1];},0)*beat;
+}
+function startMusic(){
+  if(audioCtx){audioCtx.close();audioCtx=null;}
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  (function loop(){loopTimer=setTimeout(loop,(scheduleMusic(audioCtx,audioCtx.currentTime+0.1)-0.3)*1000);})();
+}
+function stopMusic(){clearTimeout(loopTimer);if(audioCtx){audioCtx.close();audioCtx=null;}}
+function toggleMusic(){
+  var btn=document.getElementById('musicBtn');
+  if(musicPlaying){
+    stopMusic();musicPlaying=false;
+    document.getElementById('musicNote').innerHTML='&#9835;';
+    document.getElementById('musicLabel').textContent='음악 켜기';
+    btn.classList.remove('active');
+  } else {
+    startMusic();musicPlaying=true;
+    document.getElementById('musicNote').innerHTML='&#9834;';
+    document.getElementById('musicLabel').textContent='음악 끄기';
+    btn.classList.add('active');
+  }
+}
+</script>
+</body>
+</html>
